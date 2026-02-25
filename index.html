@@ -1,264 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CampusConnect — College Dating App</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="hero">
-      <nav class="nav">
-        <div class="logo">CampusConnect</div>
-        <div class="nav-actions">
-          <button class="ghost-button">Sign in</button>
-          <button class="primary-button">Join the waitlist</button>
-        </div>
-      </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      <div class="hero-content">
-        <div class="hero-text">
-          <p class="pill">Verified students only • Safe mode</p>
-          <h1>Find your campus spark with smart, safe matchmaking.</h1>
-          <p class="subhead">
-            A dating experience designed for college life — curated matches, study
-            buddy mode, and event-based icebreakers that keep the vibes real.
-          </p>
-          <div class="hero-cta">
-            <button class="primary-button">Create profile</button>
-            <button class="ghost-button">Explore features</button>
-          </div>
-          <div class="hero-metrics">
-            <div>
-              <h3>92%</h3>
-              <p>Match satisfaction</p>
-            </div>
-            <div>
-              <h3>4.8★</h3>
-              <p>Safety score</p>
-            </div>
-            <div>
-              <h3>150+</h3>
-              <p>Campus events</p>
-            </div>
-          </div>
-        </div>
-        <div class="hero-card">
-          <div class="profile-card active">
-            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80" alt="Student profile" />
-            <div class="profile-info">
-              <div>
-                <h4>Sofia, 21</h4>
-                <p>Computer Science • Senior</p>
-              </div>
-              <span class="badge">New match</span>
-            </div>
-            <div class="profile-tags">
-              <span>📚 Study dates</span>
-              <span>🎧 Indie playlists</span>
-              <span>☕ Coffee walks</span>
-            </div>
-            <div class="profile-actions">
-              <button class="icon-button">❌</button>
-              <button class="icon-button highlight">💗</button>
-              <button class="icon-button">⭐</button>
-            </div>
-          </div>
-          <div class="match-list">
-            <div class="match-item">
-              <div>
-                <h5>Tonight • 7:00 PM</h5>
-                <p>Campus movie night — 18 people going</p>
-              </div>
-              <button class="ghost-button small">Join</button>
-            </div>
-            <div class="match-item">
-              <div>
-                <h5>Study buddy match</h5>
-                <p>Find someone in your major for finals week.</p>
-              </div>
-              <button class="ghost-button small">Match</button>
-            </div>
-          </div>
-        </div>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a1a;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Animated background orbs */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: floatOrb 10s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .bg-orb.o1 { width: 400px; height: 400px; background: #7c3aed; top: -100px; left: -100px; animation-delay: 0s; }
+    .bg-orb.o2 { width: 350px; height: 350px; background: #2563eb; bottom: -80px; right: -80px; animation-delay: -4s; }
+    .bg-orb.o3 { width: 250px; height: 250px; background: #db2777; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -7s; }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(30px, -20px) scale(1.05); }
+      66%       { transform: translate(-20px, 30px) scale(0.95); }
+    }
+
+    /* Calculator shell */
+    .calc-wrapper {
+      position: relative;
+      z-index: 10;
+      animation: slideUp 0.6s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(60px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .calculator {
+      width: 340px;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow:
+        0 8px 40px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.06) inset,
+        0 1px 0 rgba(255,255,255,0.15) inset;
+    }
+
+    /* Display */
+    .display {
+      background: rgba(0,0,0,0.3);
+      border-radius: 18px;
+      padding: 20px 20px 14px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.07);
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+    }
+    .expr {
+      color: rgba(255,255,255,0.4);
+      font-size: 14px;
+      font-weight: 300;
+      text-align: right;
+      min-height: 20px;
+      transition: all 0.2s ease;
+      word-break: break-all;
+      letter-spacing: 0.5px;
+    }
+    .result {
+      color: #fff;
+      font-size: 44px;
+      font-weight: 300;
+      text-align: right;
+      letter-spacing: -1px;
+      transition: all 0.25s cubic-bezier(.22,1,.36,1);
+      word-break: break-all;
+      line-height: 1.1;
+    }
+    .result.pop {
+      animation: pop 0.25s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes pop {
+      0%   { transform: scale(0.88); opacity: 0.5; }
+      60%  { transform: scale(1.04); }
+      100% { transform: scale(1);    opacity: 1; }
+    }
+    .result.shake {
+      animation: shake 0.35s ease;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%     { transform: translateX(-8px); }
+      40%     { transform: translateX(8px); }
+      60%     { transform: translateX(-5px); }
+      80%     { transform: translateX(5px); }
+    }
+
+    /* Button grid */
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    /* Base button */
+    .btn {
+      position: relative;
+      overflow: hidden;
+      border: none;
+      border-radius: 16px;
+      height: 68px;
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      transition:
+        transform 0.12s cubic-bezier(.22,1,.36,1),
+        box-shadow 0.15s ease,
+        background 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      user-select: none;
+    }
+
+    /* Ripple */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: rippleAnim 0.55s linear;
+      pointer-events: none;
+      background: rgba(255,255,255,0.25);
+    }
+    @keyframes rippleAnim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    .btn:active { transform: scale(0.91); }
+
+    /* Number / default buttons */
+    .btn.num {
+      background: rgba(255,255,255,0.09);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .btn.num:hover {
+      background: rgba(255,255,255,0.16);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Operator buttons */
+    .btn.op {
+      background: linear-gradient(135deg, rgba(124,58,237,0.6), rgba(99,40,220,0.5));
+      color: #c4b5fd;
+      border: 1px solid rgba(167,139,250,0.25);
+      box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+    }
+    .btn.op:hover {
+      background: linear-gradient(135deg, rgba(139,92,246,0.75), rgba(124,58,237,0.65));
+      box-shadow: 0 6px 24px rgba(124,58,237,0.45);
+      transform: translateY(-2px);
+    }
+
+    /* Action / top row */
+    .btn.action {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 15px;
+      font-weight: 400;
+    }
+    .btn.action:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+    }
+
+    /* Equals button */
+    .btn.eq {
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      color: #fff;
+      border: none;
+      box-shadow: 0 6px 24px rgba(124,58,237,0.5);
+      font-size: 22px;
+    }
+    .btn.eq:hover {
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+      box-shadow: 0 8px 30px rgba(124,58,237,0.65);
+      transform: translateY(-2px);
+    }
+
+    /* Zero wide */
+    .btn.zero { grid-column: span 2; }
+
+    /* Dot */
+    .btn.dot { font-size: 24px; font-weight: 600; line-height: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- Background orbs -->
+  <div class="bg-orb o1"></div>
+  <div class="bg-orb o2"></div>
+  <div class="bg-orb o3"></div>
+
+  <div class="calc-wrapper">
+    <div class="calculator">
+      <div class="display">
+        <div class="expr" id="expr"></div>
+        <div class="result" id="result">0</div>
       </div>
-    </header>
+      <div class="buttons">
+        <!-- Row 1 -->
+        <button class="btn action" data-action="clear">AC</button>
+        <button class="btn action" data-action="sign">+/−</button>
+        <button class="btn action" data-action="percent">%</button>
+        <button class="btn op"     data-action="op" data-val="÷">÷</button>
+        <!-- Row 2 -->
+        <button class="btn num" data-action="digit" data-val="7">7</button>
+        <button class="btn num" data-action="digit" data-val="8">8</button>
+        <button class="btn num" data-action="digit" data-val="9">9</button>
+        <button class="btn op"  data-action="op"    data-val="×">×</button>
+        <!-- Row 3 -->
+        <button class="btn num" data-action="digit" data-val="4">4</button>
+        <button class="btn num" data-action="digit" data-val="5">5</button>
+        <button class="btn num" data-action="digit" data-val="6">6</button>
+        <button class="btn op"  data-action="op"    data-val="−">−</button>
+        <!-- Row 4 -->
+        <button class="btn num" data-action="digit" data-val="1">1</button>
+        <button class="btn num" data-action="digit" data-val="2">2</button>
+        <button class="btn num" data-action="digit" data-val="3">3</button>
+        <button class="btn op"  data-action="op"    data-val="+">+</button>
+        <!-- Row 5 -->
+        <button class="btn num zero" data-action="digit" data-val="0">0</button>
+        <button class="btn num dot"  data-action="dot">.</button>
+        <button class="btn eq"       data-action="equals">=</button>
+      </div>
+    </div>
+  </div>
 
-    <main>
-      <section class="feature-grid">
-        <div class="feature">
-          <h3>Verified campus IDs</h3>
-          <p>Only authenticated students can join, with badge verification and safety checks.</p>
-        </div>
-        <div class="feature">
-          <h3>Intent-based matching</h3>
-          <p>Choose from dating, friends, or study mode to get aligned introductions.</p>
-        </div>
-        <div class="feature">
-          <h3>Moments & prompts</h3>
-          <p>Conversation starters and shared interests make first chats effortless.</p>
-        </div>
-        <div class="feature">
-          <h3>Event-led vibes</h3>
-          <p>Meet through campus events and clubs before going 1:1.</p>
-        </div>
-      </section>
+  <script>
+    const resultEl = document.getElementById('result');
+    const exprEl   = document.getElementById('expr');
 
-      <section class="dashboard">
-        <div class="dashboard-header">
-          <div>
-            <h2>Your match dashboard</h2>
-            <p>Personalized recommendations, real-time activity, and safe meetups.</p>
-          </div>
-          <div class="filters">
-            <button class="chip active" data-filter="all">All</button>
-            <button class="chip" data-filter="study">Study buddy</button>
-            <button class="chip" data-filter="dating">Dating</button>
-            <button class="chip" data-filter="friends">Friends</button>
-          </div>
-        </div>
-        <div class="card-grid" id="matchGrid">
-          <article class="match-card" data-type="dating">
-            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80" alt="Student profile" />
-            <div class="card-content">
-              <h4>Amelia • 20</h4>
-              <p>Design major who loves art shows and city walks.</p>
-              <div class="card-footer">
-                <span>3 mutual classes</span>
-                <button class="primary-button small">Say hi</button>
-              </div>
-            </div>
-          </article>
-          <article class="match-card" data-type="study">
-            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=500&q=80" alt="Student profile" />
-            <div class="card-content">
-              <h4>Jordan • 22</h4>
-              <p>Night owl coder looking for a study partner.</p>
-              <div class="card-footer">
-                <span>2 shared clubs</span>
-                <button class="primary-button small">Plan session</button>
-              </div>
-            </div>
-          </article>
-          <article class="match-card" data-type="friends">
-            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80" alt="Student profile" />
-            <div class="card-content">
-              <h4>Sofia • 21</h4>
-              <p>Looking for coffee chats and campus adventures.</p>
-              <div class="card-footer">
-                <span>4 mutual friends</span>
-                <button class="primary-button small">Connect</button>
-              </div>
-            </div>
-          </article>
-          <article class="match-card" data-type="dating">
-            <img src="https://images.unsplash.com/photo-1545996124-0501ebae84d0?auto=format&fit=crop&w=500&q=80" alt="Student profile" />
-            <div class="card-content">
-              <h4>Diego • 23</h4>
-              <p>Campus athlete, always down for smoothie runs.</p>
-              <div class="card-footer">
-                <span>1 mutual class</span>
-                <button class="primary-button small">Start chat</button>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
+    let current   = '0';
+    let previous  = '';
+    let operator  = null;
+    let justEvaled = false;
+    let hasDecimal = false;
 
-      <section class="messages">
-        <div class="messages-panel">
-          <h3>Messages</h3>
-          <div class="message-thread active">
-            <div>
-              <h4>Amelia</h4>
-              <p>Want to check out the gallery pop-up tonight?</p>
-            </div>
-            <span>2m</span>
-          </div>
-          <div class="message-thread">
-            <div>
-              <h4>Jordan</h4>
-              <p>Let’s meet at the library 6pm?</p>
-            </div>
-            <span>1h</span>
-          </div>
-          <div class="message-thread">
-            <div>
-              <h4>Priya</h4>
-              <p>Can you send me your playlist?</p>
-            </div>
-            <span>3h</span>
-          </div>
-        </div>
-        <div class="chat-window">
-          <div class="chat-header">
-            <div>
-              <h4>Amelia</h4>
-              <p>Design • Junior • Art Club</p>
-            </div>
-            <button class="ghost-button small">Safety tools</button>
-          </div>
-          <div class="chat-body">
-            <div class="chat-bubble">
-              Hey! I saw you’re into design too. Did you see the gallery pop-up?
-            </div>
-            <div class="chat-bubble outgoing">
-              I did! It looks amazing. Want to go together after class?
-            </div>
-            <div class="chat-bubble">
-              That sounds perfect. I’ll grab tickets.
-            </div>
-          </div>
-          <div class="chat-input">
-            <input type="text" placeholder="Type your message..." />
-            <button class="primary-button small">Send</button>
-          </div>
-        </div>
-      </section>
+    function updateDisplay(val, animate = false) {
+      let display = val;
+      if (display.length > 12) {
+        const n = parseFloat(val);
+        if (!isNaN(n)) display = n.toPrecision(8).replace(/\.?0+$/, '');
+      }
+      resultEl.textContent = display;
+      if (animate) {
+        resultEl.classList.remove('pop');
+        void resultEl.offsetWidth;
+        resultEl.classList.add('pop');
+      }
+    }
 
-      <section class="safety">
-        <div>
-          <h2>Safety-first, always.</h2>
-          <p>
-            Share your meetup details with trusted friends, set check-ins, and use
-            one-tap reporting. Our moderation team is on 24/7.
-          </p>
-        </div>
-        <div class="safety-cards">
-          <div class="safety-card">
-            <h4>SafeMeet</h4>
-            <p>Share location + plans with your squad.</p>
-          </div>
-          <div class="safety-card">
-            <h4>Night Mode</h4>
-            <p>Auto check-ins to keep you safe.</p>
-          </div>
-          <div class="safety-card">
-            <h4>Block & report</h4>
-            <p>Fast action if something feels off.</p>
-          </div>
-        </div>
-      </section>
+    function triggerShake() {
+      resultEl.classList.remove('shake');
+      void resultEl.offsetWidth;
+      resultEl.classList.add('shake');
+    }
 
-      <section class="cta">
-        <div>
-          <h2>Ready to meet your campus match?</h2>
-          <p>Join thousands of students building real connections.</p>
-        </div>
-        <button class="primary-button">Get started</button>
-      </section>
-    </main>
+    function getOp(sym) {
+      if (sym === '÷') return (a,b) => b === 0 ? null : a / b;
+      if (sym === '×') return (a,b) => a * b;
+      if (sym === '−') return (a,b) => a - b;
+      if (sym === '+') return (a,b) => a + b;
+    }
 
-    <footer>
-      <p>CampusConnect © 2024 • Built for college communities.</p>
-    </footer>
+    function doCalc() {
+      if (!operator || previous === '') return parseFloat(current);
+      const a = parseFloat(previous);
+      const b = parseFloat(current);
+      const fn = getOp(operator);
+      const r  = fn(a, b);
+      return r;
+    }
 
-    <script src="script.js"></script>
-  </body>
+    function handleDigit(v) {
+      if (justEvaled) { current = v; justEvaled = false; previous = ''; operator = null; }
+      else if (current === '0' && v !== '.') current = v;
+      else current += v;
+      updateDisplay(current);
+    }
+
+    function handleDot() {
+      if (justEvaled) { current = '0.'; justEvaled = false; }
+      else if (!current.includes('.')) current += '.';
+      updateDisplay(current);
+    }
+
+    function handleOp(sym) {
+      if (operator && !justEvaled) {
+        const r = doCalc();
+        if (r === null) { exprEl.textContent = 'Cannot ÷ by 0'; triggerShake(); return; }
+        previous = String(parseFloat(r.toFixed(10)));
+        updateDisplay(previous, true);
+      } else {
+        previous = current;
+      }
+      operator  = sym;
+      justEvaled = false;
+      current   = '0';
+      exprEl.textContent = `${previous} ${sym}`;
+    }
+
+    function handleEquals() {
+      if (!operator) return;
+      const r = doCalc();
+      exprEl.textContent = `${previous} ${operator} ${current} =`;
+      if (r === null) { resultEl.textContent = 'Error'; triggerShake(); return; }
+      const res = parseFloat(r.toFixed(10));
+      current   = String(res);
+      previous  = '';
+      operator  = null;
+      justEvaled = true;
+      updateDisplay(current, true);
+    }
+
+    function handleClear() {
+      current = '0'; previous = ''; operator = null; justEvaled = false;
+      exprEl.textContent = '';
+      updateDisplay('0', true);
+    }
+
+    function handleSign() {
+      current = String(parseFloat(current) * -1);
+      updateDisplay(current);
+    }
+
+    function handlePercent() {
+      current = String(parseFloat(current) / 100);
+      updateDisplay(current);
+    }
+
+    // Button click handler + ripple
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        // Ripple
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size/2}px;top:${e.clientY - rect.top - size/2}px`;
+        btn.appendChild(ripple);
+        ripple.addEventListener('animationend', () => ripple.remove());
+
+        // Logic
+        const { action, val } = btn.dataset;
+        if (action === 'digit')   handleDigit(val);
+        else if (action === 'dot')    handleDot();
+        else if (action === 'op')     handleOp(val);
+        else if (action === 'equals') handleEquals();
+        else if (action === 'clear')  handleClear();
+        else if (action === 'sign')   handleSign();
+        else if (action === 'percent')handlePercent();
+      });
+    });
+
+    // Keyboard support
+    document.addEventListener('keydown', e => {
+      if (e.key >= '0' && e.key <= '9') handleDigit(e.key);
+      else if (e.key === '.')  handleDot();
+      else if (e.key === '+')  handleOp('+');
+      else if (e.key === '-')  handleOp('−');
+      else if (e.key === '*')  handleOp('×');
+      else if (e.key === '/')  { e.preventDefault(); handleOp('÷'); }
+      else if (e.key === 'Enter' || e.key === '=') handleEquals();
+      else if (e.key === 'Escape' || e.key === 'c') handleClear();
+      else if (e.key === 'Backspace') {
+        if (current.length > 1) current = current.slice(0,-1);
+        else current = '0';
+        updateDisplay(current);
+      }
+    });
+  </script>
+</body>
 </html>
